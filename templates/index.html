@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Litter Detection System</title>
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Litter Detection System</h1>
+        </header>
+        <main>
+            <section class="upload-section">
+                <h2>Upload Image</h2>
+                <form action="http://127.0.0.1:5000/detect" method="post" enctype="multipart/form-data">
+
+                    <label for="file">Select Image:</label>
+                    <input type="file" name="file" id="file" required>
+                    <button type="submit" class="btn">Detect Litter</button>
+                </form>
+            </section>
+            <section class="records-section">
+                <h2>Vehicle Records</h2>
+                <button class="btn" onclick="fetchRecords()">Show Records</button>
+                <div id="records" class="records"></div>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2024 Litter Detection System</p>
+        </footer>
+    </div>
+
+    <script>
+        async function fetchRecords() {
+            const response = await fetch('/records');
+            const data = await response.json();
+            const recordsDiv = document.getElementById('records');
+            if (data.length > 0) {
+                let recordsHTML = "<table><tr><th>License Plate</th><th>Count</th><th>Penalty</th></tr>";
+                data.forEach(record => {
+                    recordsHTML += `<tr>
+                        <td>${record[0]}</td>
+                        <td>${record[1]}</td>
+                        <td>$${record[2]}</td>
+                    </tr>`;
+                });
+                recordsHTML += "</table>";
+                recordsDiv.innerHTML = recordsHTML;
+            } else {
+                recordsDiv.innerHTML = "<p>No records found.</p>";
+            }
+        }
+    </script>
+</body>
+</html>
